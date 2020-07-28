@@ -1,7 +1,9 @@
 package com.foursquare.android.sample
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import android.telecom.Call
 import android.text.TextUtils
@@ -9,9 +11,16 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.foursquare.android.nativeoauth.*
 import com.maryambehzi.myarea.ExampleTokenStore
+import com.maryambehzi.myarea.ExploreResultsAdapter
+import com.maryambehzi.myarea.LocationClickListener
+import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import javax.security.auth.callback.Callback
@@ -22,15 +31,23 @@ import javax.security.auth.callback.Callback
  *
  * @date 2013-06-01
  */
-class MainActivity : FragmentActivity() {
+class MainActivity : Activity(), LifecycleOwner, LocationClickListener {
     private val client = OkHttpClient()
+    private var currentLocation: Location? = null
+
+
+    private val adapter: ExploreResultsAdapter by lazy { ExploreResultsAdapter(this) }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         ensureUi()
-//        run("https://api.foursquare.com/v2/venues/search")
+
+        main_locations_recycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        main_locations_recycler.adapter = adapter
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -40,13 +57,6 @@ class MainActivity : FragmentActivity() {
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
-
-//    private fun run(url: String): String {
-//        val request = Request.Builder()
-//            .url(url)
-//            .build()
-//        client.newCall(request).execute().use{ response -> return response.body!!.string() }
-//    }
 
     /**
      * Update the UI. If we already fetched a token, we'll just show a success
@@ -150,8 +160,16 @@ class MainActivity : FragmentActivity() {
             Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
         }
     }
-}
 
-private fun Call.enqueue(responseCallback: Callback) {
+    override fun onLocationClicked(id: String) {
+        TODO("Not yet implemented")
+    }
 
+    override fun onFavoriteClicked(id: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLifecycle(): Lifecycle {
+        TODO("Not yet implemented")
+    }
 }
