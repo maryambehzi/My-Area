@@ -1,4 +1,4 @@
-package com.maryambehzi.myarea
+package com.maryambehzi.myarea.UI
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil

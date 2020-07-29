@@ -34,7 +34,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/locationCategory"
-        app:layout_constraintEnd_toStartOf="@+id/locationFavorite"
+        app:layout_constraintEnd_toStartOf="@+id/sidebar"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/locationImage"
         app:layout_constraintTop_toTopOf="@+id/locationImage"
@@ -51,7 +51,7 @@
         android:fontFamily="sans-serif-medium"
         android:lines="1"
         app:layout_constraintBottom_toTopOf="@+id/locationDistance"
-        app:layout_constraintEnd_toStartOf="@+id/locationFavorite"
+        app:layout_constraintEnd_toStartOf="@+id/sidebar"
         app:layout_constraintStart_toEndOf="@+id/locationImage"
         app:layout_constraintTop_toBottomOf="@+id/locationName"
         tools:text="Coffee Shop" />
@@ -63,20 +63,20 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/locationImage"
-        app:layout_constraintEnd_toStartOf="@+id/locationFavorite"
+        app:layout_constraintEnd_toStartOf="@+id/sidebar"
         app:layout_constraintStart_toEndOf="@+id/locationImage"
         app:layout_constraintTop_toBottomOf="@+id/locationCategory"
         tools:text="350 meters" />
 
-    <CheckBox
-        android:id="@+id/locationFavorite"
-        style="?android:attr/starStyle"
+    <ImageView
+        android:id="@+id/sidebar"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
         android:paddingStart="0dp"
         android:paddingEnd="8dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

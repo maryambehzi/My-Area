@@ -17,5 +17,9 @@
     <string name="menu_settings">Settings</string>
     <string name="connected_to_foursquare">Hey looks like you’re connected to Foursquare!</string>
     <string name="app_not_installed_message">To do this, you’ll need the latest version of Foursquare installed.</string>
+    <string name="enable">Enable</string>
+    <string name="close">Close</string>
+    <string name="error_closing_no_location_permission">This application requires the use of location services.  Without this permission the application will not function properly and will close.</string>
+    <string name="search_glyph_description">Location glyph</string>
 
 </resources>

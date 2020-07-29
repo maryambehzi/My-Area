@@ -3,7 +3,8 @@ package com.maryambehzi.myarea.Models
 import android.os.Parcel
 import android.os.Parcelable
 
-class Icon () : Parcelable {
+class Icon() : Parcelable {
+
     var prefix: String? = null
     var suffix: String? = null
 

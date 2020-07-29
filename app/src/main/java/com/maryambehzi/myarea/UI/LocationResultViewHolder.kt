@@ -1,4 +1,4 @@
-package com.maryambehzi.myarea
+package com.maryambehzi.myarea.UI
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -30,18 +30,6 @@ class LocationResultViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(Layo
             }
         }
 
-        //load the image async with Glide so that the UI doesnt have to wait around on images to load (GlideConfig.kt)
-//        GlideApp.with(context).load(locationResult.locationIcon).into(itemView.locationImage)
-
-        //set the initial state of the favorites icon by checking if its a favorite in the database
-//        setupFavoriteIndicator(locationResult, onClickListener)
-
-        //send the click event to the listener
-        itemView.setOnClickListener{
-            locationResult.id?.let {
-                onClickListener.onLocationClicked(it)
-            }
-        }
     }
 
 }

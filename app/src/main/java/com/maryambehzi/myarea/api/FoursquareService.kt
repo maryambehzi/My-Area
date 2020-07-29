@@ -16,8 +16,7 @@ interface FoursquareService {
     }
 
 
-    @GET("/v2/venues/explore?limit=50$COMMON_PARAMS")
-    fun getLocationResults(@Query("ll") latlng: String): Call<FoursquareResponse>
-
+    @GET("/v2/venues/search?limit=50$COMMON_PARAMS")
+    fun getLocationResults(@Query("query") query: String, @Query("ll") latlng: String): Call<FoursquareResponse>
 
 }

@@ -1,4 +1,4 @@
-package com.maryambehzi.myarea
+package com.maryambehzi.myarea.UI
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -13,7 +13,6 @@ class LocationResult(private val venue: Venue) : ILocationResult, Parcelable {
     val locationDistance = venue.location?.distance
     val lat = venue.location?.lat
     val lng = venue.location?.lng
-    var isFavorite: Boolean = false
 
     constructor(parcel: Parcel) : this(parcel.readParcelable<Venue>(
         Venue::class.java.classLoader)!!)
@@ -59,8 +58,7 @@ class LocationResult(private val venue: Venue) : ILocationResult, Parcelable {
                 locationIcon == otherResult.locationIcon &&
                 locationName == otherResult.locationName &&
                 lat == otherResult.lat &&
-                lng == otherResult.lng &&
-                isFavorite == otherResult.isFavorite
+                lng == otherResult.lng
     }
 
 }
