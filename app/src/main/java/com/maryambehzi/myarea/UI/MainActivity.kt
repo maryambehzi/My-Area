@@ -1,19 +1,13 @@
 package com.foursquare.android.sample
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.annotation.UiThread
-import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -26,8 +20,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
-//import com.maryambehzi.myarea.UI.DetailsActivity
-//import com.pnuema.android.foursite.helpers.Errors
+import com.maryambehzi.myarea.detail.ui.DetailsActivity
+import com.maryambehzi.myarea.Helper.Error
 import com.maryambehzi.myarea.UI.ExploreResultsAdapter
 import com.maryambehzi.myarea.UI.LocationResult
 import com.maryambehzi.myarea.UI.LocationClickListener
@@ -41,19 +35,14 @@ import kotlinx.android.synthetic.main.content_main.*
  *
  * @date 2013-06-01
  */
-class MainActivity : AppCompatActivity(), LifecycleOwner,
-    LocationClickListener {
+class MainActivity : AppCompatActivity(), LifecycleOwner, LocationClickListener {
     companion object {
         const val STATE_QUERY_STRING = "queryString"
         private const val PERMISSION_LOCATION_REQUEST_CODE = 579
     }
-    private val viewModel: MainScreenViewModel by lazy { ViewModelProviders.of(this).get<MainScreenViewModel>(
-        MainScreenViewModel::class.java) }
-    private val adapter: ExploreResultsAdapter by lazy {
-        ExploreResultsAdapter(
-            this
-        )
-    }
+
+    private val viewModel: MainScreenViewModel by lazy { ViewModelProviders.of(this).get<MainScreenViewModel>(MainScreenViewModel::class.java) }
+    private val adapter: ExploreResultsAdapter by lazy { ExploreResultsAdapter(this) }
     private val locationProviderClient: FusedLocationProviderClient by lazy { FusedLocationProviderClient(this) }
     private var snackBar: Snackbar? = null
     private var searchView: SearchView? = null
@@ -62,7 +51,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar)
 
         handleGetLocation()
 
@@ -108,6 +97,25 @@ class MainActivity : AppCompatActivity(), LifecycleOwner,
 
         })
 
+        viewModel.locationResultsError.observe(this, Observer<Int> {
+            dismissSnackBar()
+            if (it != null) {
+                when (it) {
+                    MainScreenViewModel.ERROR_CODE_RETRIEVE -> snackBar = Error.showError(main_coordinator, R.string.request_failed_main, R.string.retry, View.OnClickListener {
+                        dismissSnackBar()
+                        viewModel.refresh(currentLocation)
+                    })
+                    MainScreenViewModel.ERROR_CODE_NO_CURRENT_LOCATION -> snackBar = Error.showError(main_coordinator, R.string.error_location_permission_denied, R.string.enable, View.OnClickListener {
+                        //launch app detail settings page to let the user enable the permission that they denied
+                        val intent = Intent()
+                        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                        intent.data = Uri.fromParts("package", packageName, null)
+                        startActivity(intent)
+                        finish()
+                    })
+                }
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -115,6 +123,16 @@ class MainActivity : AppCompatActivity(), LifecycleOwner,
 
         adapter.notifyDataSetChanged()
     }
+
+    /**
+     * Handle clicks on the location view holders and startup the details screen
+     */
+    override fun onLocationClicked(id: String) {
+        currentLocation?.let { currentLocation ->
+            startActivityForResult(DetailsActivity.buildIntent(this, id, LatLng(currentLocation.latitude, currentLocation.longitude)), DetailsActivity.DETAILS_REQUEST_CODE)
+        }
+    }
+
 
     /**
      * Handle standard on back pressed events but intercept back presses

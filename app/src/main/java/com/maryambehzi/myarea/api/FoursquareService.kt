@@ -1,8 +1,10 @@
 package com.maryambehzi.myarea.api
 
+import com.maryambehzi.myarea.detail.models.DetailsResponse
 import com.maryambehzi.myarea.Models.FoursquareResponse
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface FoursquareService {
@@ -19,4 +21,6 @@ interface FoursquareService {
     @GET("/v2/venues/search?limit=50$COMMON_PARAMS")
     fun getLocationResults(@Query("query") query: String, @Query("ll") latlng: String): Call<FoursquareResponse>
 
+    @GET("/v2/venues/{venue_id}/?$COMMON_PARAMS")
+    fun getDetails(@Path("venue_id") venueId: String): Call<DetailsResponse>
 }

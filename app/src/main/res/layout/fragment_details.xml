@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <import type="com.foursquare.android.sample.R" />
+        <variable
+            name="model"
+            type="com.maryambehzi.myarea.detail.viewmodel.DetailsViewModel" />
+        <variable
+            name="handlers"
+            type="com.maryambehzi.myarea.detail.ui.DetailsClickHandlers" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".details.ui.DetailsFragment"
+        tools:showIn="@layout/activity_details">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_half_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.0" />
+
+        <TextView
+            android:id="@+id/details_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:text="@{model.venueName}"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline_half_screen"
+            tools:text="پیتزا جزیره" />
+
+        <TextView
+            android:id="@+id/details_rating"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            android:text="@{model.venueRating}"
+            app:layout_constraintStart_toStartOf="@+id/details_name"
+            app:layout_constraintTop_toBottomOf="@+id/details_name"
+            tools:text="5.0" />
+
+        <RatingBar
+            android:id="@+id/details_rating_bar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="80dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="8dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="0.1"
+            android:rating="@{safeUnbox(model.venueBar)}"
+            app:layout_constraintBottom_toBottomOf="@+id/details_rating"
+            app:layout_constraintStart_toEndOf="@+id/details_rating"
+            app:layout_constraintTop_toTopOf="@+id/details_rating"/>
+
+        <TextView
+            android:id="@+id/details_reviews"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            android:text="@{String.valueOf(safeUnbox(model.venueReviews))}"
+            app:layout_constraintBottom_toBottomOf="@+id/details_rating"
+            app:layout_constraintStart_toEndOf="@id/details_rating_bar"
+            app:layout_constraintTop_toTopOf="@+id/details_rating"
+            tools:text="(500)" />
+
+
+        <TextView
+            android:id="@+id/details_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            android:text="@{model.venueCategory}"
+            app:layout_constraintStart_toStartOf="@+id/details_rating"
+            app:layout_constraintTop_toBottomOf="@+id/details_rating"
+            tools:text="فست فود" />
+
+        <TextView
+            android:id="@+id/details_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:text="@{model.venueAddress}"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/details_category"
+            tools:text="خیابان بعلی خونمون" />
+
+        <TextView
+            android:id="@+id/details_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@{model.venueHours}"
+            app:layout_constraintBottom_toBottomOf="@+id/details_rating_bar"
+            app:layout_constraintStart_toEndOf="@+id/details_reviews"
+            app:layout_constraintTop_toTopOf="@+id/details_rating_bar"
+            tools:text="همیشه بازه" />
+
+        <TextView
+            android:id="@+id/details_web"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:background="?selectableItemBackground"
+            android:drawableStart="@drawable/web"
+            android:drawablePadding="16dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lines="1"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:visibility="@{model.websiteVisibility(model.venueWebsite)}"
+            android:text="@{model.venueWebsite}"
+            android:onClick="@{() -> handlers.onWebsiteClick(context, model.venueWebsite)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/details_address"
+            tools:text="http://pizzajazire.com"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/details_phone"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="?selectableItemBackground"
+            android:drawableStart="@drawable/phone"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:visibility="@{model.phoneVisibility(model.venuePhone)}"
+            android:text="@{model.venuePhone}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/details_web"
+            tools:text="909 230 1202"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="48dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -20,16 +20,15 @@ class LocationResultViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(Layo
         //distance display
         itemView.locationDistance.text = ""
         locationResult.locationDistance?.let {meters ->
-            //if longer than a mile display miles
-            if (meters >= 1609.34) {
-                val miles = (meters / 1609.34) //convert to miles
-                itemView.locationDistance.text = "You are Here"
-            } else {
-                val feet = (meters / 3.28084).roundToInt() //convert to feet
-                itemView.locationDistance.text = "You are Here"
-            }
+            itemView.locationDistance.text = meters.toString()+" meters away"
         }
 
+        //send the click event to the listener
+        itemView.setOnClickListener{
+            locationResult.id?.let {
+                onClickListener.onLocationClicked(it)
+            }
+        }
     }
 
 }
