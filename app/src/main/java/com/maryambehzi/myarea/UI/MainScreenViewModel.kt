@@ -45,32 +45,6 @@ class MainScreenViewModel : ViewModel() {
         })
     }
 
-    private fun getLocationResultsOffline(foursquareResponse : FoursquareResponse) {
-
-//        val currentLatLng = currentLocation.latitude.toString() + "," + currentLocation.longitude.toString()
-//        FoursquareServiceProvider.service.getLocationResults(query = query, latlng = currentLocation).enqueue(object : Callback<FoursquareResponse> {
-//            override fun onFailure(call: Call<FoursquareResponse>, t: Throwable) {
-//                Log.e(javaClass.simpleName, t.message)
-//                locationResultsError.postValue(ERROR_CODE_RETRIEVE)
-//            }
-//
-//            override fun onResponse(call: Call<FoursquareResponse>, response: Response<FoursquareResponse>) {
-//                if (response.isSuccessful && response.body() != null) {
-//                    Log.d(TAG, "Success: " + response.raw().request.url.toString())
-//                    //successful response so parse the results and post them to the awaiting live data
-//                    response.body()?.let { foursquareResponse ->
-//                        locationResults.postValue(buildResults(foursquareResponse))
-//                    }
-//                } else {
-//                    onFailure(call, Throwable("Unsuccessful request for locations: " + response.code()))
-//                }
-//            }
-//        })
-
-        locationResults.postValue(buildResults(foursquareResponse))
-
-    }
-
     fun setQuery(query: String, currentLocation: Location?) {
         searchFilter = query
 
@@ -86,15 +60,6 @@ class MainScreenViewModel : ViewModel() {
         getLocationResults(searchFilter, currentLocation)
     }
 
-    fun refreshOffline(response: FoursquareResponse)  {
-        if (response == null) {
-            locationResultsError.postValue(ERROR_CODE_NO_CURRENT_LOCATION)
-            return
-        }
-
-        getLocationResultsOffline(response)
-
-    }
 
     /**
      * Build the list of location results sorted by distance
@@ -104,7 +69,13 @@ class MainScreenViewModel : ViewModel() {
     private fun buildResults(foursquareResponse: FoursquareResponse): ArrayList<LocationResult> {
         foursquareResponse.response?.let { response ->
             val resultsList = ArrayList<LocationResult>()
-            response.venues?.forEach { resultsList.add(LocationResult(it)) }
+//            Log.d("hellloo",response.groups?.get(0)?.item.toString())
+//            response.groups?.get(0)
+            response.groups?.get(0)?.item?.forEach {
+                Log.d("iddddd", "heloooo")
+                resultsList.add(LocationResult(it.venues))
+            }
+
 
             return ArrayList(resultsList.sortedBy { it.locationDistance })
         }

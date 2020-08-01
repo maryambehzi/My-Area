@@ -1,39 +1,17 @@
 package com.maryambehzi.myarea.UI
 
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.annotation.NonNull
 import com.maryambehzi.myarea.Models.Venue
 
-class LocationResult(private val venue: Venue) : ILocationResult, Parcelable {
-    val id = venue.id
-    val locationName = venue.name
-    val locationCategory = venue.categories?.firstOrNull()?.pluralName
-    val locationIcon = buildIconPath(venue)
-    val locationDistance = venue.location?.distance
-    val lat = venue.location?.lat
-    val lng = venue.location?.lng
+class LocationResult(private val venue: Venue?) : ILocationResult {
+    val id = venue?.id
+    val locationName = venue?.name
+    val locationCategory = venue?.categories?.firstOrNull()?.pluralName
+    val locationIcon = venue?.let { buildIconPath(it) }
+    val locationDistance = venue?.location?.distance
+    val lat = venue?.location?.lat
+    val lng = venue?.location?.lng
 
-    constructor(parcel: Parcel) : this(parcel.readParcelable<Venue>(
-        Venue::class.java.classLoader)!!)
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(venue, 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<LocationResult> {
-        override fun createFromParcel(parcel: Parcel): LocationResult {
-            return LocationResult(parcel)
-        }
-
-        override fun newArray(size: Int): Array<LocationResult?> {
-            return arrayOfNulls(size)
-        }
-    }
 
     @NonNull
     private fun buildIconPath(venue: Venue): String {

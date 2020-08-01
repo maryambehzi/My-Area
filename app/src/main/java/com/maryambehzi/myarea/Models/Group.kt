@@ -2,7 +2,8 @@ package com.maryambehzi.myarea.Models
 
 import com.google.gson.annotations.SerializedName
 
-class Response {
-    @SerializedName("groups")
-    var groups: ArrayList<Group>? = null
+class Group {
+    @SerializedName("items")
+    var item: ArrayList<Item>? = null
+
 }
