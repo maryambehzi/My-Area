@@ -20,25 +20,6 @@
     <string name="enable">Enable</string>
     <string name="close">Close</string>
     <string name="error_closing_no_location_permission">This application requires the use of location services.  Without this permission the application will not function properly and will close.</string>
-    <string name="search_glyph_description">Location glyph</string>
-    <plurals name="meters">
-        <item quantity="one">%s meter</item>
-        <item quantity="zero">You are here</item>
-        <item quantity="other">%s meter</item>
-    </plurals>
-
-    <plurals name="miles">
-        <item quantity="one">%s mile</item>
-        <item quantity="zero">You are here</item>
-        <item quantity="other">%s miles</item>
-    </plurals>
-
-    <plurals name="feet">
-        <item quantity="one">%s foot</item>
-        <item quantity="zero">You are here</item>
-        <item quantity="other">%s feet</item>
-    </plurals>
-
     <string name="request_failed_main">Unable to retrieve locations</string>
     <string name="retry">Retry</string>
     <string name="error_location_permission_denied">Location permission denied, enable?</string>

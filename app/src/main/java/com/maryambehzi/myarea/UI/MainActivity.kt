@@ -63,14 +63,18 @@ class MainActivity : AppCompatActivity(), LifecycleOwner, LocationClickListener 
         var editor: SharedPreferences.Editor = preferences.edit()
 
         handleGetLocation()
-        Log.d("location1", currentLocation.toString())
 
-        var json =preferences.getString("savedlocations", "def")
-        val type = object : TypeToken<ArrayList<LocationResult>>() {}.type
-//        adapter.setLocationResults(Gson().fromJson(json, type))
-        adapter.setLocationResults(Gson().fromJson<ArrayList<LocationResult>>(json, type))
+        /**
+        * Offline first
+        * Showing previous locations at first
+        **/
 
-//        if (preferences.getString("response", "def") != "def")
+        if(preferences.getString("savedlocations","def") != "def"){
+            var json =preferences.getString("savedlocations", "def")
+            val type = object : TypeToken<ArrayList<LocationResult>>() {}.type
+            adapter.setLocationResults(Gson().fromJson<ArrayList<LocationResult>>(json, type))
+        }
+
 
         main_locations_recycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         main_locations_recycler.adapter = adapter
@@ -79,10 +83,6 @@ class MainActivity : AppCompatActivity(), LifecycleOwner, LocationClickListener 
             val query = it.getString(STATE_QUERY_STRING)
             query?.let { queryString ->
                 viewModel.setQuery(queryString, currentLocation)
-                Log.d("location2", currentLocation.toString())
-
-//                val sharedPreferences = getSharedPreferences("production", Context.MODE_PRIVATE)
-//                sharedPreferences.edit().putString("CurrentLocation", currentLocation.toString()).apply()
             }
         }
 
@@ -97,11 +97,9 @@ class MainActivity : AppCompatActivity(), LifecycleOwner, LocationClickListener 
 
             if (currentLocation == null) {
                 handleGetLocation()
-                Log.d("location3", currentLocation.toString())
 
             } else {
                 viewModel.refresh(currentLocation)
-                Log.d("location4", currentLocation.toString())
 
             }
         }
@@ -120,9 +118,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner, LocationClickListener 
                 adapter.setLocationResults(locations = it)
                 editor.putString("CurrentLocation", currentLocation!!.latitude.toString()+","+currentLocation!!.longitude.toString())
                 editor.commit()
-                Log.d("location6", currentLocation.toString())
-                Log.d("latlong", preferences.getString("CurrentLocation", "def"))
-                editor.putString("response", viewModel.locationResults.value.toString())
+                //save the location result for cache
                 var json: String = Gson().toJson(it)
                 editor.putString("savedlocations", json)
                 editor.commit()
@@ -138,25 +134,18 @@ class MainActivity : AppCompatActivity(), LifecycleOwner, LocationClickListener 
                     MainScreenViewModel.ERROR_CODE_RETRIEVE -> snackBar = Error.showError(main_coordinator, R.string.request_failed_main, R.string.retry, View.OnClickListener {
                         dismissSnackBar()
                         viewModel.refresh(currentLocation)
-                        Log.d("location7", currentLocation.toString())
-
-//                        viewModel.refreshOffline(preferences.getString("CurrentLocation", "def"))
-
                     })
                     MainScreenViewModel.ERROR_CODE_NO_CURRENT_LOCATION -> snackBar = Error.showError(main_coordinator, R.string.error_location_permission_denied, R.string.enable, View.OnClickListener {
                         //launch app detail settings page to let the user enable the permission that they denied
                         val intent = Intent()
                         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                         intent.data = Uri.fromParts("package", packageName, null)
-                        Log.d("location8", currentLocation.toString())
-
                         startActivity(intent)
                         finish()
                     })
                 }
             }
         })
-//        viewModel.refreshOffline()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -215,9 +204,6 @@ class MainActivity : AppCompatActivity(), LifecycleOwner, LocationClickListener 
     }
 
     private fun handleGetLocation() {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-
-        var editor: SharedPreferences.Editor = preferences.edit()
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf( Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSION_LOCATION_REQUEST_CODE
@@ -229,9 +215,6 @@ class MainActivity : AppCompatActivity(), LifecycleOwner, LocationClickListener 
             currentLocation = it
             dismissSnackBar()
             viewModel.refresh(currentLocation)
-//            editor.putString("CurrentLoction", currentLocation!!.latitude.toString()+" "+currentLocation!!.longitude.toString())
-//            editor.commit()
-//            Log.d("CurrentLoction", preferences.getString("CurrentLoction", "def"))
                     }
     }
 
