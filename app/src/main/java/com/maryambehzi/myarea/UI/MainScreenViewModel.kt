@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.maryambehzi.myarea.api.FoursquareServiceProvider
 import com.maryambehzi.myarea.Models.FoursquareResponse
-import com.maryambehzi.myarea.UI.LocationResult
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class MainScreenViewModel : ViewModel() {
     companion object {
@@ -21,7 +21,7 @@ class MainScreenViewModel : ViewModel() {
     var locationResults: MutableLiveData<ArrayList<LocationResult>> = MutableLiveData()
     var locationResultsError: MutableLiveData<Int> = MutableLiveData()
 
-    private fun getLocationResults(query: String, currentLocation: Location) {
+    private fun getLocationResults(query: String, currentLocation: Location){
 
         val currentLatLng = currentLocation.latitude.toString() + "," + currentLocation.longitude.toString()
         FoursquareServiceProvider.service.getLocationResults(query = query, latlng = currentLatLng).enqueue(object : Callback<FoursquareResponse> {
@@ -36,12 +36,39 @@ class MainScreenViewModel : ViewModel() {
                     //successful response so parse the results and post them to the awaiting live data
                     response.body()?.let { foursquareResponse ->
                         locationResults.postValue(buildResults(foursquareResponse))
+                        Log.d("foursquarerespomse", foursquareResponse.toString())
                     }
                 } else {
                     onFailure(call, Throwable("Unsuccessful request for locations: " + response.code()))
                 }
             }
         })
+    }
+
+    private fun getLocationResultsOffline(foursquareResponse : FoursquareResponse) {
+
+//        val currentLatLng = currentLocation.latitude.toString() + "," + currentLocation.longitude.toString()
+//        FoursquareServiceProvider.service.getLocationResults(query = query, latlng = currentLocation).enqueue(object : Callback<FoursquareResponse> {
+//            override fun onFailure(call: Call<FoursquareResponse>, t: Throwable) {
+//                Log.e(javaClass.simpleName, t.message)
+//                locationResultsError.postValue(ERROR_CODE_RETRIEVE)
+//            }
+//
+//            override fun onResponse(call: Call<FoursquareResponse>, response: Response<FoursquareResponse>) {
+//                if (response.isSuccessful && response.body() != null) {
+//                    Log.d(TAG, "Success: " + response.raw().request.url.toString())
+//                    //successful response so parse the results and post them to the awaiting live data
+//                    response.body()?.let { foursquareResponse ->
+//                        locationResults.postValue(buildResults(foursquareResponse))
+//                    }
+//                } else {
+//                    onFailure(call, Throwable("Unsuccessful request for locations: " + response.code()))
+//                }
+//            }
+//        })
+
+        locationResults.postValue(buildResults(foursquareResponse))
+
     }
 
     fun setQuery(query: String, currentLocation: Location?) {
@@ -57,6 +84,16 @@ class MainScreenViewModel : ViewModel() {
         }
 
         getLocationResults(searchFilter, currentLocation)
+    }
+
+    fun refreshOffline(response: FoursquareResponse)  {
+        if (response == null) {
+            locationResultsError.postValue(ERROR_CODE_NO_CURRENT_LOCATION)
+            return
+        }
+
+        getLocationResultsOffline(response)
+
     }
 
     /**
